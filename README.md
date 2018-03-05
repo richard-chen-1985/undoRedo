@@ -1,5 +1,5 @@
 # undoRedo
-undoRedo is a javascript library for histories management.
+undoRedo is a javascript library for histories management uses a fixed length array.
 
 # Usage
 

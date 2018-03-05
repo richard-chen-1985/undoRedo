@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./src/undoRedo.js"></script>
+</head>
+<body>
+  <input type="text" id="txt"> <button id="add">添加</button><br>
+  <button id="undo" disabled>undo</button> <button id="redo" disabled>redo</button>
+  <script>
+    const rd = new UndoRedo({
+      maxLength: 5,
+      onChange: function () {
+        btnUndo[rd.canUndo() ? 'removeAttribute' : 'setAttribute']('disabled', true)
+        btnRedo[rd.canRedo() ? 'removeAttribute' : 'setAttribute']('disabled', true)
+      }
+    })
+    
+    const txt = document.getElementById('txt')
+    const btnAdd = document.getElementById('add')
+    const btnUndo = document.getElementById('undo')
+    const btnRedo = document.getElementById('redo')
+
+    const print = function () {
+      console.log({
+        data: rd._data.join(','),
+        tail: rd._tailIndex,
+        current: rd._currentIndex,
+        head: rd._headIndex
+      })
+    }
+
+    const handleAdd = function () {
+      if (txt.value) {
+        rd.push(txt.value)
+        txt.value = ''
+        print()
+      }
+    }
+
+    const handleUndo = function () {
+      if (rd.canUndo()) {
+        txt.value = rd.undo()
+        print()
+      } else {
+        alert('can not undo')
+      }
+    }
+
+    const handleRedo = function () {
+      if (rd.canRedo()) {
+        txt.value = rd.redo()
+        print()
+      } else {
+        alert('can not redo')
+      }
+    }
+
+    btnAdd.addEventListener('click', handleAdd, false)
+    btnUndo.addEventListener('click', handleUndo, false)
+    btnRedo.addEventListener('click', handleRedo, false)
+
+    rd.init('11')
+
+  </script>
+</body>
+</html>

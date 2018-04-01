@@ -23,4 +23,6 @@ udrd.canRedo() // true
 
 udrd.redo() // bbb
 
+udrd.getList() // [...]
+
 ```

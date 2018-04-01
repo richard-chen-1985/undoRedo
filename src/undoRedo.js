@@ -38,20 +38,25 @@ UndoRedo.prototype = {
   },
   undo: function () {
     if (this.canUndo()) {
-      this._currentIndex = (this._max + this._currentIndex - 1) % this._max
-
-      this._onChange && this._onChange.call(this)
-
-      return this._data[this._currentIndex]
+      return this._goTo((this._max + this._currentIndex - 1) % this._max)
+    } else {
+      throw new Error('undo failed, reach to the last item')
     }
   },
   redo: function () {
     if (this.canRedo()) {
-      this._currentIndex = (this._currentIndex + 1) % this._max
-
+      return this._goTo((this._currentIndex + 1) % this._max)
+    } else {
+      throw new Error('redo failed, reach to the newest item')
+    }
+  },
+  _goTo: function (index) {
+    if (index < this._max) {
+      this._currentIndex = index
       this._onChange && this._onChange.call(this)
-
       return this._data[this._currentIndex]
+    } else {
+      throw new Error(index + 'th item dose not exist')
     }
   },
   canUndo: function () {
@@ -63,6 +68,18 @@ UndoRedo.prototype = {
     // 1. current index is not the head index
     // 2. the data after current index is exists
     return this._currentIndex !== this._headIndex && typeof(this._data[(this._currentIndex + 1) % this._max]) !== 'undefined'
+  },
+  getList: function () {
+    if (this._headIndex === this._tailIndex) {
+      // just init data
+      return this._data.slice(0, 1)
+    } else if (this._headIndex > this._tailIndex) {
+      // no reach to max, (0, head + 1)
+      return this._data.slice(0, this._headIndex + 1)
+    } else {
+      // over max, (tail, max) + (0, head)
+      return this._data.slice(this._tailIndex - this._max).concat(this._data.slice(0, this._headIndex + 1))
+    }
   },
   toString: function () {
     return this._data.join(',')

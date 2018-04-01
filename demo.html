@@ -18,7 +18,7 @@
         btnRedo[rd.canRedo() ? 'removeAttribute' : 'setAttribute']('disabled', true)
       }
     })
-    
+
     const txt = document.getElementById('txt')
     const btnAdd = document.getElementById('add')
     const btnUndo = document.getElementById('undo')
@@ -26,7 +26,7 @@
 
     const print = function () {
       console.log({
-        data: rd._data.join(','),
+        data: rd.getList().join(','),
         tail: rd._tailIndex,
         current: rd._currentIndex,
         head: rd._headIndex
